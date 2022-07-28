@@ -1,0 +1,25 @@
+galaxy_info:
+  author: Arnulf Heimsbakk
+  description: Ramblings of a sysadmin
+  company: None
+
+  license: GPL-2.0-or-later
+
+  min_ansible_version: '2.11'
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+    - name: EL
+      versions:
+        - '7'
+        - '8'
+        - '9'
+
+  galaxy_tags:
+    - backup
+    - restic
+
+dependencies: []

@@ -1,0 +1,7 @@
+# Editors
+*.swp
+
+# Testing with Vagrant
+.vagrant
+console-output.*
+
