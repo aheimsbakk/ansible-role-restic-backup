@@ -31,7 +31,7 @@ Configurable variables for this role. `''` is a reference to an empty string.
 * `restic_backup_destination_user` --- created on first run, default `restic`.
 * `restic_backup_source_options` --- restic options to add, default `''`.
 * `restic_backup_source_password` --- password for backup, default `''`.
-* `restic_backup_source_paths` --- array of paths to backup up, default `['/etc']`.
+* `restic_backup_source_paths` --- array of paths to backup, default `['/etc']`.
 
 
 ## Dependencies
