@@ -1,2 +1,6 @@
 ---
-# defaults file for ansible-role-restic-backup
+restic_backup_destination_user: restic
+restic_backup_destination_path: /var/backups/restic
+restic_backup_destination_multiple: true
+restic_backup_source_options: ''
+restic_backup_source_password: ''

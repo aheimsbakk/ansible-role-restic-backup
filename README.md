@@ -23,11 +23,15 @@ A secure bastion server, from where to do Ansible orcestration. The bastion serv
 
 ## Role Variables
 
-* `restic_backup_destination_server`
-* `restic_backup_destination_user`
-* `restic_backup_destination_path`
-* `restic_backup_source_options`
-* `restic_backup_source_password`
+Configurable variables for this role. `''` is a reference to an empty string.
+
+* `restic_backup_destination_server` --- **required** [FQDN](https://en.wikipedia.org/wiki/Fully_qualified_domain_name) of the destination server, no default.
+* `restic_backup_destination_user` --- created on first run, default `restic`.
+* `restic_backup_destination_path` --- default `/var/backups/restic`.
+* `restic_backup_destination_multiple` --- multiple repos named `{{ restic_backup_destination_path + "/" + inventory_hostname }}`, default `true`.
+* `restic_backup_source_options` --- restic options to add -- example excludes, default `''`
+* `restic_backup_source_password` --- password for the restic backup - keep in vault, default `''`
+
 
 ## Dependencies
 
