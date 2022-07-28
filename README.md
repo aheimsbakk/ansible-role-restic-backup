@@ -17,6 +17,10 @@ This role helps orcestrate a [restic][] backup system. Configures both clients a
                 playbook
 ```
 
+## Versions
+
+* `main` --- upstream development version.
+
 ## Requirements
 
 A secure bastion server, from where to do Ansible orcestration. The bastion server should have two-factor or hardware token autentication.
