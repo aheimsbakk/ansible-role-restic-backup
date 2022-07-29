@@ -1,4 +1,13 @@
 ---
 - hosts: all
   roles:
-    - ../../.
+    - role: ./../.
+      restic_backup_destination_server: alma9
+      restic_backup_destination_user: backup
+      restic_backup_destination_path: /opt/backup
+      restic_backup_destination_multiple: true
+      restic_backup_source_options: -e tmp
+      restic_backup_source_password: mypwd
+      restic_backup_source_paths:
+        - /etc
+        - /var/spool/cron
