@@ -2,9 +2,9 @@
 Description=Run backup with Restic daily
 
 [Timer]
-OnCalendar=daily
+OnCalendar={{ restic_backup_source_timer }}
 AccuracySec=12h
-RandomizedDelaySec=6h
+RandomizedDelaySec={{ restic_backup_source_timer_delay }}
 FixedRandomDelay=false
 Persistent=true
 

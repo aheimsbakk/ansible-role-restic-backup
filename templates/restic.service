@@ -6,7 +6,7 @@ After=network.target
 Type=oneshot
 TimeoutSec=5m
 Environment='RESTIC_PASSWORD_FILE=/var/lib/misc/restic-service-passwd' 'HOME=/root'
-ExecStart=restic -o rclone.program='ssh -i .ssh/id_ed25519_{{ restic_backup_destination_user }} -l {{ restic_backup_destination_user }} {{ restic_backup_destination_address|default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }}' \
+ExecStart=/usr/local/bin/restic -o rclone.program='ssh -i .ssh/id_ed25519_{{ restic_backup_destination_user }} -l {{ restic_backup_destination_user }} {{ restic_backup_destination_address|default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }}' \
   -r rclone: backup \
   {{ restic_backup_source_options|join(" ") }} \
   --exclude-if-present {{ restic_backup_source_exclude_if_present }} \

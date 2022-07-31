@@ -72,7 +72,7 @@
 - name: init repo if it does not exists
   ansible.builtin.command:
     argv:
-      - restic
+      - /usr/local/bin/restic
       - -r
       - '{{ backup_destination_path }}'
       - init
@@ -90,6 +90,7 @@
     owner: '{{ restic_backup_destination_user }}'
     mode: 0700
     recurse: true
+  delegate_to: '{{ restic_backup_destination_server }}'
   when: init_repo is changed
 
 - name: create ssh-key for the root user if it's missing
