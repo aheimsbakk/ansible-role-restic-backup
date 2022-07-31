@@ -2,6 +2,4 @@
 skip_list:
   - command-instead-of-module
   - no-handler
-
-warn_list:
   - experimental
