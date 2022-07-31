@@ -46,6 +46,7 @@ Configurable variables for this role. `''` is a reference to an empty string.
 * `restic_backup_source_options` --- list of strings with options to add, default `[]`.
 * `restic_backup_source_password` --- password for backup, default `''`.
 * `restic_backup_source_paths` --- list of paths to backup, default `['/etc']`.
+* `restic_backup_source_exclude_if_present` --- exclude directory if file is present, default `.restic-ignore`.
 * `restic_restic_version` --- version of restic to use, default `0.13.1`.
 * `restic_rclone_version` --- version of rclone to use, default `v1.59.0`.
 

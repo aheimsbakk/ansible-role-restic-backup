@@ -8,10 +8,17 @@
 
 ## Modify variables
 
-- name: multiple or single destination paths
+- name: multiple repositories
   ansible.builtin.set_fact:
-    restic_backup_destination_path: "{{ restic_backup_destination_path + '/' + inventory_hostname }}"
+    backup_destination_path: '{{ restic_backup_destination_path }}/{{ inventory_hostname }}'
+    cacheable: false
   when: restic_backup_destination_multiple|bool
+
+- name: single repository
+  ansible.builtin.set_fact:
+    backup_destination_path: '{{ restic_backup_destination_path }}'
+    cacheable: false
+  when: not restic_backup_destination_multiple|bool
 
 ## Destination server
 
@@ -73,44 +80,60 @@
     argv:
       - restic
       - -r
-      - '{{ restic_backup_destination_path }}'
+      - '{{ backup_destination_path }}'
       - init
-    creates: '{{ restic_backup_destination_path }}/config'
+    creates: '{{ backup_destination_path }}/config'
   environment:
     RESTIC_PASSWORD_FILE: /var/lib/misc/restic-service-passwd
   # Do not run once, in case we have one folder for each host
   # run_once: true
   delegate_to: '{{ restic_backup_destination_server }}'
   #become_user: '{{ restic_backup_destination_user }}'
+  register: init_repo
+
+- name: change ownership of repository
+  ansible.builtin.file:
+    dest: '{{ backup_destination_path }}'
+    owner: '{{ restic_backup_destination_user }}'
+    mode: 0700
+    recurse: true
+  when: init_repo is changed
 
 - name: create ssh-key for the root user if it's missing
   ansible.builtin.user:
     name: root
     generate_ssh_key: true
     ssh_key_type: ed25519
-    ssh_key_file: ".ssh/id_ed25519_{{ restic_backup_destination_user }}"
-    ssh_key_comment: "{{ ansible_managed }}"
+    ssh_key_file: '.ssh/id_ed25519_{{ restic_backup_destination_user }}'
+    ssh_key_comment: 'Ansible managed {{ now(fmt="%y-%m-%d") }}'
     force: false
+
+- name: check if key exists
+  ansible.builtin.stat:
+    path: '.ssh/id_ed25519_{{ restic_backup_destination_user }}'
+  register: ssh_pub_key_file
 
 - name: read public key into variable
   ansible.builtin.slurp:
-    src: "/root/.ssh/id_ed25519_{{ restic_backup_destination_user }}.pub"
-  register: ssh_pub_key
+    src: '/root/.ssh/id_ed25519_{{ restic_backup_destination_user }}.pub'
+  register: ssh_pub_key_blob
+  when: ssh_pub_key_file.stat.exists|bool
 
 - name: write public key to restic_destination
   ansible.posix.authorized_key:
     user: '{{ restic_backup_destination_user }}'
-    key: '{{ ssh_pub_key.content | b64decode }}'
+    key: '{{ ssh_pub_key_blob.content | b64decode }}'
     comment: '{{ inventory_hostname }}'
-    key_options: 'restrict,command="rclone serve restic --stdio --append-only --transfers 2 {{ restic_backup_destination_rclone_remote }}:{{ restic_backup_destination_path }}"'
+    key_options: 'restrict,command="rclone serve restic --stdio --append-only --transfers 2 {{ restic_backup_destination_rclone_remote }}:{{ backup_destination_path }}"'
   delegate_to: '{{ restic_backup_destination_server }}'
   throttle: 1
+  when: ssh_pub_key_blob.content is defined
 
 # TODO: should not use default_ipv4_address in known_hosts?
 - name: add restic_destination to known_hosts
   ansible.builtin.known_hosts:
-    name: '{{ restic_backup_destination_address | default(hostvars[restic_destination].ansible_facts.fqdn) }}'
-    key: '{{ restic_backup_destination_address | default(hostvars[restic_destination].ansible_facts.fqdn) }},{{ hostvars[restic_destination].ansible_facts.default_ipv4.address }} {{ hostvars[restic_destination].ansible_facts.ssh_host_key_ed25519_public_keytype }} {{ hostvars[restic_destination].ansible_facts.ssh_host_key_ed25519_public }}'
+    name: '{{ restic_backup_destination_address | default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }}'
+    key: '{{ restic_backup_destination_address | default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }},{{ hostvars[restic_backup_destination_server].ansible_facts.default_ipv4.address }} {{ hostvars[restic_backup_destination_server].ansible_facts.ssh_host_key_ed25519_public_keytype }} {{ hostvars[restic_backup_destination_server].ansible_facts.ssh_host_key_ed25519_public }}'
     path: /root/.ssh/known_hosts
 
 - name: add systemd service for running rclone
@@ -125,9 +148,15 @@
     src: restic.timer
     mode: 0644
 
+- name: check if restic.timer exists
+  ansible.builtin.stat:
+    path: /etc/systemd/system/restic.timer
+  register: systemd_restic_timer
+
 - name: enable the systemd timer of restic
   ansible.builtin.systemd:
     name: restic.timer
     daemon_reload: true
     state: started
     enabled: true
+  when: systemd_restic_timer.stat.exists|bool
