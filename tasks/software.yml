@@ -1,8 +1,8 @@
 ---
 - name: download restic
   ansible.builtin.get_url:
-    url: 'https://github.com/restic/restic/releases/download/v{{ restic_restic_version }}/restic_{{ restic_restic_version }}_linux_{{ restic_architecture_map[ansible_architecture] }}.bz2'
-    checksum: 'sha256sum:https://github.com/restic/restic/releases/download/v{{ restic_restic_version }}/SHA256SUMS'
+    url: 'https://github.com/restic/restic/releases/download/v{{ restic_backup_restic_version }}/restic_{{ restic_backup_restic_version }}_linux_{{ restic_architecture_map[ansible_architecture] }}.bz2'
+    checksum: 'sha256sum:https://github.com/restic/restic/releases/download/v{{ restic_backup_restic_version }}/SHA256SUMS'
     dest: /usr/local/src/restic.bz2
   register: download_restic
   when: not ansible_check_mode
@@ -19,8 +19,8 @@
 
 - name: download rclone
   ansible.builtin.get_url:
-    url: 'https://github.com/rclone/rclone/releases/download/{{ restic_rclone_version }}/rclone-{{ restic_rclone_version }}-linux-{{ restic_architecture_map[ansible_architecture] }}.zip'
-    checksum: 'sha256sum:https://github.com/rclone/rclone/releases/download/{{ restic_rclone_version }}/SHA256SUMS'
+    url: 'https://github.com/rclone/rclone/releases/download/{{ restic_backup_rclone_version }}/rclone-{{ restic_backup_rclone_version }}-linux-{{ restic_architecture_map[ansible_architecture] }}.zip'
+    checksum: 'sha256sum:https://github.com/rclone/rclone/releases/download/{{ restic_backup_rclone_version }}/SHA256SUMS'
     dest: /usr/local/src/rclone.zip
   register: download_rclone
   when: not ansible_check_mode
@@ -34,7 +34,3 @@
   when:
     - download_rclone is changed
     - not ansible_check_mode
-
-
-
-
