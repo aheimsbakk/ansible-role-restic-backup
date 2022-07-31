@@ -13,9 +13,9 @@ jobs:
     - name: Lint Ansible Playbook
       uses: ansible/ansible-lint-action@main
       with:
-        targets: ""
+        path: ""
         #override-deps: |
         #  ansible==xx
         #  ansible-lint==xx
-        args: ""
+        #args: ""
 

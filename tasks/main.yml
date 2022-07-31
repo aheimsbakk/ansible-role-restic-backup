@@ -127,7 +127,9 @@
     user: '{{ restic_backup_destination_user }}'
     key: '{{ ssh_pub_key_blob.content | b64decode }}'
     comment: '{{ inventory_hostname }}'
-    key_options: 'restrict,command="/usr/local/bin/rclone serve restic --stdio --append-only --transfers {{ restic_backup_destination_rclone_transfers }} {{ restic_backup_destination_rclone_remote }}:{{ backup_destination_path }}"'
+    key_options: 'restrict,command="/usr/local/bin/rclone serve restic --stdio --append-only --transfers
+                  {{ restic_backup_destination_rclone_transfers }}
+                  {{ restic_backup_destination_rclone_remote }}:{{ backup_destination_path }}"'
   delegate_to: '{{ restic_backup_destination_server }}'
   throttle: 1
   when: ssh_pub_key_blob.content is defined
@@ -135,13 +137,17 @@
 - name: add restic_destination to known_hosts (ed25519)
   ansible.builtin.known_hosts:
     name: '{{ restic_backup_destination_address | default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }}'
-    key: '{{ restic_backup_destination_address | default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }} {{ hostvars[restic_backup_destination_server].ansible_facts.ssh_host_key_ed25519_public_keytype }} {{ hostvars[restic_backup_destination_server].ansible_facts.ssh_host_key_ed25519_public }}'
+    key: '{{ restic_backup_destination_address | default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }}
+          {{ hostvars[restic_backup_destination_server].ansible_facts.ssh_host_key_ed25519_public_keytype }}
+          {{ hostvars[restic_backup_destination_server].ansible_facts.ssh_host_key_ed25519_public }}'
     path: /root/.ssh/known_hosts
 
 - name: add restic_destination to known_hosts (rsa)
   ansible.builtin.known_hosts:
     name: '{{ restic_backup_destination_address | default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }}'
-    key: '{{ restic_backup_destination_address | default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }} {{ hostvars[restic_backup_destination_server].ansible_facts.ssh_host_key_rsa_public_keytype }} {{ hostvars[restic_backup_destination_server].ansible_facts.ssh_host_key_rsa_public }}'
+    key: '{{ restic_backup_destination_address | default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }}
+          {{ hostvars[restic_backup_destination_server].ansible_facts.ssh_host_key_rsa_public_keytype }}
+          {{ hostvars[restic_backup_destination_server].ansible_facts.ssh_host_key_rsa_public }}'
     path: /root/.ssh/known_hosts
 
 - name: add systemd service for running rclone
