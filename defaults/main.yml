@@ -2,10 +2,18 @@
 restic_backup_destination_user: restic
 restic_backup_destination_path: /var/backups/restic
 restic_backup_destination_multiple: true
-restic_backup_rclone_conf: |
+restic_backup_destination_rclone_conf: |
   [restic]
   type = local
+restic_backup_destination_rclone_remote: restic
 restic_backup_source_options: ''
 restic_backup_source_password: ''
 restic_backup_source_paths:
   - /etc
+restic_restic_version: '0.13.1'
+restic_rclone_version: 'v1.59.0'
+
+# helper variables
+
+restic_architecture_map:
+  x86_64: amd64

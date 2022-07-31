@@ -1,10 +1,15 @@
 # vim: ai et ts=2 st=2 sw=2 :
 ---
 
+# Install software
+
+- name: install restic and rclone
+  ansible.builtin.include: software.yml
+
 ## Modify variables
 
 - name: multiple or single destination paths
-  set_fact:
+  ansible.builtin.set_fact:
     restic_backup_destination_path: "{{ restic_backup_destination_path + '/' + inventory_hostname }}"
   when: restic_backup_destination_multiple|bool
 
@@ -43,17 +48,17 @@
     dest: '/home/{{ restic_backup_destination_user }}/.config/rclone/rclone.conf'
     owner: '{{ restic_backup_destination_user }}'
     mode: '0600'
-    content: "{{ restic_backup_rclone_conf }}"
+    content: "{{ restic_backup_destination_rclone_conf }}"
   run_once: true
   delegate_to: '{{ restic_backup_destination_server }}'
 
 ## Clients configuration
 
-- name: install rclone and restic
-  ansible.builtin.package:
-    name:
-      - rclone
-      - restic
+#- name: install rclone and restic
+#  ansible.builtin.package:
+#    name:
+#      - rclone
+#      - restic
 
 - name: store restic password to /var/lib/misc
   ansible.builtin.copy:
@@ -76,7 +81,7 @@
   # Do not run once, in case we have one folder for each host
   # run_once: true
   delegate_to: '{{ restic_backup_destination_server }}'
-  become_user: '{{ restic_backup_destination_user }}'
+  #become_user: '{{ restic_backup_destination_user }}'
 
 - name: create ssh-key for the root user if it's missing
   ansible.builtin.user:
@@ -97,7 +102,7 @@
     user: '{{ restic_backup_destination_user }}'
     key: '{{ ssh_pub_key.content | b64decode }}'
     comment: '{{ inventory_hostname }}'
-    key_options: 'restrict,command="rclone serve restic --stdio --append-only --transfers 2 restic:{{ restic_backup_destination_path }}"'
+    key_options: 'restrict,command="rclone serve restic --stdio --append-only --transfers 2 {{ restic_backup_destination_rclone_remote }}:{{ restic_backup_destination_path }}"'
   delegate_to: '{{ restic_backup_destination_server }}'
   throttle: 1
 
