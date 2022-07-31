@@ -6,10 +6,6 @@
 - name: install restic and rclone
   ansible.builtin.include_tasks: software.yml
 
-- assert:
-    that: false
-  when: not ansible_check_mode
-
 ## Modify variables
 
 - name: multiple repositories
@@ -65,12 +61,6 @@
 
 ## Clients configuration
 
-#- name: install rclone and restic
-#  ansible.builtin.package:
-#    name:
-#      - rclone
-#      - restic
-
 - name: store restic password to /var/lib/misc
   ansible.builtin.copy:
     dest: /var/lib/misc/restic-service-passwd
@@ -92,7 +82,6 @@
   # Do not run once, in case we have one folder for each host
   # run_once: true
   delegate_to: '{{ restic_backup_destination_server }}'
-  #become_user: '{{ restic_backup_destination_user }}'
   register: init_repo
 
 - name: change ownership of repository
@@ -128,7 +117,7 @@
     user: '{{ restic_backup_destination_user }}'
     key: '{{ ssh_pub_key_blob.content | b64decode }}'
     comment: '{{ inventory_hostname }}'
-    key_options: 'restrict,command="rclone serve restic --stdio --append-only --transfers 2 {{ restic_backup_destination_rclone_remote }}:{{ backup_destination_path }}"'
+    key_options: 'restrict,command="/usr/bin/local/rclone serve restic --stdio --append-only --transfers {{ restic_backup_destination_rclone_transfers }} {{ restic_backup_destination_rclone_remote }}:{{ backup_destination_path }}"'
   delegate_to: '{{ restic_backup_destination_server }}'
   throttle: 1
   when: ssh_pub_key_blob.content is defined

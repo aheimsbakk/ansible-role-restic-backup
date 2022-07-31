@@ -43,6 +43,7 @@ Configurable variables for this role. `''` is a reference to an empty string.
     type = local
     ```
 * `restic_backup_destination_rclone_remote` --- remote to use, default `restic`.
+* `restic_backup_destination_rclone_transfers` --- rclone parallel streams, default `2`.
 * `restic_backup_source_options` --- list of strings with options to add, default `[]`.
 * `restic_backup_source_password` --- password for backup, default `''`.
 * `restic_backup_source_paths` --- list of paths to backup, default `['/etc']`.

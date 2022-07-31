@@ -20,7 +20,7 @@
   args:
     executable: /bin/bash
   when:
-    # - download_restic is changed
+    - download_restic is changed
     - not ansible_check_mode
 
 - name: do we have restic binary
@@ -43,13 +43,8 @@
   when: not ansible_check_mode
 
 - name: extract rclone
-  ansible.builtin.unarchive:
-    src: /usr/local/src/rclone.zip
-    dest: /usr/local/bin
-    remote_src: true
-    include: '*/rclone'
-    extra_opts:
-      - -j
+  ansible.builtin.command: |
+    unzip -oj /usr/local/src/rclone.zip '*/rclone' -d /usr/local/bin
   when:
-    # - download_rclone is changed
+    - download_rclone is changed
     - not ansible_check_mode
