@@ -1,2 +1,27 @@
 ---
-# defaults file for ansible-role-restic-backup
+# role defaults
+
+restic_backup_destination_user: restic
+restic_backup_destination_path: /var/backups/restic
+restic_backup_destination_multiple: true
+restic_backup_destination_rclone_conf: |
+  [restic]
+  type = local
+restic_backup_destination_rclone_remote: restic
+restic_backup_destination_rclone_transfers: 2
+restic_backup_source_options: []
+restic_backup_source_password: ''
+restic_backup_source_paths:
+  - /etc
+restic_backup_source_exclude_if_present: .restic-ignore
+restic_backup_source_timer: '*-*-* 00:00:00'
+restic_backup_source_timer_delay: '6h'
+restic_backup_source_timer_accuracy: '12h'
+restic_backup_restic_version: '0.13.1'
+restic_backup_rclone_version: 'v1.59.0'
+
+# helper variables
+
+restic_architecture_map:
+  x86_64: amd64
+  aarch64: arm64

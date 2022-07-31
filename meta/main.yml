@@ -3,6 +3,9 @@ galaxy_info:
   description: Ramblings of a sysadmin
   company: None
 
+  role_name: restic_backup
+  namespace: heimsbakk
+
   license: GPL-2.0-or-later
 
   min_ansible_version: '2.11'

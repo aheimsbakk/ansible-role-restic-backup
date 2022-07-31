@@ -3,7 +3,7 @@
 [restic]: https://restic.net/
 [rclone]: https://rclone.org/
 
-This role helps orcestrate a [restic][] backup system. Configures both clients and destination server.
+This role helps orchestrate a [restic][] backup system. Configures both clients and destination server. [restic][] and [rclone][] will be downloaded from [Github](https://github.com).
 
 ```plain
                +---------+
@@ -17,17 +17,55 @@ This role helps orcestrate a [restic][] backup system. Configures both clients a
                 playbook
 ```
 
+## Versions
+
+* `1.0.0` --- initial version
+* `main` --- upstream development version.
+
 ## Requirements
 
-A secure bastion server, from where to do Ansible orcestration. The bastion server should have two-factor or hardware token autentication.
+A secure bastion server, from where to do Ansible orchestration. The bastion server should have two-factor or hardware token authentication.
+
+### OS compatibility
+
+No direct limitation. The Vagrant test environment in `tests` directory runs on these OSes.
+
+* Ubuntu Jammy
+* Ubuntu Focal
+* Alma Linux 8
+* Alma Linux 9
+
+### Known caveats
+
+* CentOS 7 have problems with the sysemd service file. It was excluded from test environment since it's not needed now.
 
 ## Role Variables
 
-* `restic_backup_destination_server`
-* `restic_backup_destination_user`
-* `restic_backup_destination_path`
-* `restic_backup_source_options`
-* `restic_backup_source_password`
+Configurable variables for this role. `''` is a reference to an empty string.
+
+* `restic_backup_destination_server` --- **required** inventory hostname of the destination server, no default.
+* `restic_backup_destination_address` --- address of destination server, default `{{ ansible_fqdn }}`.
+* `restic_backup_destination_user` --- created on first run, default `restic`.
+* `restic_backup_destination_path` --- default `/var/backups/restic`.
+* `restic_backup_destination_multiple` --- multiple repos with path  
+  `{{ restic_backup_destination_path + "/" + inventory_hostname }}`, default `true`.
+* `restic_backup_destination_rclone_conf` --- content of configuration file on destination, default:
+    ```ini
+    [restic]
+    type = local
+    ```
+* `restic_backup_destination_rclone_remote` --- remote to use, default `restic`.
+* `restic_backup_destination_rclone_transfers` --- rclone parallel streams, default `2`.
+* `restic_backup_source_paths` --- list of paths to backup, default `['/etc']`.
+* `restic_backup_source_password` --- password for backup, default `''`.
+* `restic_backup_source_options` --- list of strings with options to add, default `[]`.
+* `restic_backup_source_exclude_if_present` --- exclude directory if file is present, default `.restic-ignore`.
+* `restic_backup_source_timer` --- when to start backup - see `man systemd.time`, default `*-*-* 00:00:00`.
+* `restic_backup_source_timer_delay` --- random start delay, default `6h`.
+* `restic_backup_source_timer_accuracy` --- let systemd be flexible, default `12h`.
+* `restic_backup_restic_version` --- version of restic to use, default `0.13.1`.
+* `restic_backup_rclone_version` --- version of rclone to use, default `v1.59.0`.
+
 
 ## Dependencies
 

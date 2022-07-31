@@ -1,0 +1,11 @@
+[Unit]
+Description=Timer for restic backup to {{ restic_backup_destination_server }}
+
+[Timer]
+OnCalendar={{ restic_backup_source_timer }}
+AccuracySec={{ restic_backup_source_timer_accuracy }}
+RandomizedDelaySec={{ restic_backup_source_timer_delay }}
+Persistent=true
+
+[Install]
+WantedBy=timers.target
