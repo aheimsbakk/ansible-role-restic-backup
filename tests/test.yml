@@ -5,12 +5,17 @@
     - role: ./../..
       restic_backup_destination_server: alma9
       restic_backup_destination_user: backup
+      restic_backup_destination_rclone_transfers: 4
       restic_backup_destination_path: /opt/backup
       restic_backup_destination_multiple: true
       restic_backup_destination_address: 10.100.10.14
       restic_backup_source_options:
         - -e tmp
       restic_backup_source_password: mypwd
+      restic_backup_source_timer: '*-*-* *:00,10,20,30,40,50:00'
+      restic_backup_source_timer_delay: 5m
+      restic_backup_source_timer_accuracy: 5m
+      restic_backup_source_exclude_if_present: .ignore-me
       restic_backup_source_paths:
         - /etc
         - /var/spool/cron
