@@ -109,13 +109,13 @@
     path: /root/.ssh/known_hosts
 
 - name: add systemd service for running rclone
-  ansible.builtin.temlate:
+  ansible.builtin.template:
     dest: /etc/systemd/system/restic.service
     src: restic.service
     mode: 0644
 
 - name: add systemd timer for running restic
-  ansible.builtin.copy:
+  ansible.builtin.template:
     dest: /etc/systemd/system/restic.timer
     src: restic.timer
     mode: 0644

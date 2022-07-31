@@ -1,7 +1,8 @@
 ---
 - hosts: all
+  become: true
   roles:
-    - role: ./../.
+    - role: ./../..
       restic_backup_destination_server: alma9
       restic_backup_destination_user: backup
       restic_backup_destination_path: /opt/backup
