@@ -4,7 +4,11 @@
 # Install software
 
 - name: install restic and rclone
-  ansible.builtin.include: software.yml
+  ansible.builtin.include_tasks: software.yml
+
+- assert:
+    that: false
+  when: not ansible_check_mode
 
 ## Modify variables
 

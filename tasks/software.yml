@@ -1,26 +1,43 @@
 ---
+- name: install dependencies
+  ansible.builtin.package:
+    name:
+      - bzip2
+      - unzip
+
 - name: download restic
   ansible.builtin.get_url:
     url: 'https://github.com/restic/restic/releases/download/v{{ restic_backup_restic_version }}/restic_{{ restic_backup_restic_version }}_linux_{{ restic_architecture_map[ansible_architecture] }}.bz2'
-    checksum: 'sha256sum:https://github.com/restic/restic/releases/download/v{{ restic_backup_restic_version }}/SHA256SUMS'
+    checksum: 'sha256:https://github.com/restic/restic/releases/download/v{{ restic_backup_restic_version }}/SHA256SUMS'
     dest: /usr/local/src/restic.bz2
   register: download_restic
   when: not ansible_check_mode
 
 - name: extract restic
-  ansible.builtin.unarchive:
-    src: /usr/local/src/restic.bz2
-    dest: /usr/local/bin/restic
-    remote_src: true
-    include: 'restic_*'
+  ansible.builtin.shell: |
+    set -o pipefail
+    cat /usr/local/src/restic.bz2 | bzip2 -d > /usr/local/bin/restic
+  args:
+    executable: /bin/bash
   when:
-    - download_restic is changed
+    # - download_restic is changed
     - not ansible_check_mode
+
+- name: do we have restic binary
+  ansible.builtin.stat:
+    path: /usr/local/bin/restic
+  register: restic_binary
+
+- name: fix restic mode
+  ansible.builtin.file:
+    path: /usr/local/bin/restic
+    mode: 0755
+  when: restic_binary.stat.exists|bool
 
 - name: download rclone
   ansible.builtin.get_url:
     url: 'https://github.com/rclone/rclone/releases/download/{{ restic_backup_rclone_version }}/rclone-{{ restic_backup_rclone_version }}-linux-{{ restic_architecture_map[ansible_architecture] }}.zip'
-    checksum: 'sha256sum:https://github.com/rclone/rclone/releases/download/{{ restic_backup_rclone_version }}/SHA256SUMS'
+    checksum: 'sha256:https://github.com/rclone/rclone/releases/download/{{ restic_backup_rclone_version }}/SHA256SUMS'
     dest: /usr/local/src/rclone.zip
   register: download_rclone
   when: not ansible_check_mode
@@ -28,9 +45,11 @@
 - name: extract rclone
   ansible.builtin.unarchive:
     src: /usr/local/src/rclone.zip
-    dest: /usr/local/bin/rclone
+    dest: /usr/local/bin
     remote_src: true
-    include: 'rclone'
+    include: '*/rclone'
+    extra_opts:
+      - -j
   when:
-    - download_rclone is changed
+    # - download_rclone is changed
     - not ansible_check_mode

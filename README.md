@@ -35,7 +35,7 @@ Configurable variables for this role. `''` is a reference to an empty string.
 * `restic_backup_destination_address` --- address of destination server, default `{{ ansible_fqdn }}`.
 * `restic_backup_destination_user` --- created on first run, default `restic`.
 * `restic_backup_destination_path` --- default `/var/backups/restic`.
-* `restic_backup_destination_multiple` --- multiple repos named  
+* `restic_backup_destination_multiple` --- multiple repos with path  
   `{{ restic_backup_destination_path + "/" + inventory_hostname }}`, default `true`.
 * `restic_backup_destination_rclone_conf` --- content of configuration file on destination, default:
     ```ini
