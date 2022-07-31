@@ -85,13 +85,13 @@
     src: "/root/.ssh/id_ed25519_{{ restic_backup_destination_user }}.pub"
   register: ssh_pub_key
 
-####
-
 - name: add restic_destination to known_hosts
   ansible.builtin.known_hosts:
-    name: '{{ hostvars[restic_destination].ansible_facts.fqdn }}'
-    key: '{{ hostvars[restic_destination].ansible_facts.fqdn }},{{ hostvars[restic_destination].ansible_facts.default_ipv4.address }} {{ hostvars[restic_destination].ansible_facts.ssh_host_key_ed25519_public_keytype }} {{ hostvars[restic_destination].ansible_facts.ssh_host_key_ed25519_public }}'
+    name: '{{ restic_backup_destination_address | default(hostvars[restic_destination].ansible_facts.fqdn) }}'
+    key: '{{ restic_backup_destination_address | default(hostvars[restic_destination].ansible_facts.fqdn) }},{{ hostvars[restic_destination].ansible_facts.default_ipv4.address }} {{ hostvars[restic_destination].ansible_facts.ssh_host_key_ed25519_public_keytype }} {{ hostvars[restic_destination].ansible_facts.ssh_host_key_ed25519_public }}'
     path: /root/.ssh/known_hosts
+
+##
 
 - name: write public key to restic_destination
   ansible.posix.authorized_key:
