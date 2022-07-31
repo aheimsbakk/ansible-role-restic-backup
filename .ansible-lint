@@ -1,5 +1,10 @@
 ---
 skip_list:
+  # unarchive can't do what i want it to do on EL linux
   - command-instead-of-module
+
+  # i don't use handlers, they are just hard to debug
   - no-handler
+
+  # skip experimental lints
   - experimental
