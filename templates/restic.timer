@@ -1,5 +1,5 @@
 [Unit]
-Description=Run backup with Restic daily
+Description=Timer for restic backup to {{ restic_backup_destination_server }}
 
 [Timer]
 OnCalendar={{ restic_backup_source_timer }}

@@ -19,3 +19,8 @@
       restic_backup_source_paths:
         - /etc
         - /var/spool/cron
+
+# On alma9
+#
+#   sudo -i -u backup
+#   ls /opt/backup/ | xargs -I{} /usr/local/bin/restic -p /var/lib/misc/restic-service-passwd -r '/opt/backup/{}' snapshots
