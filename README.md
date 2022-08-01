@@ -3,7 +3,7 @@
 [restic]: https://restic.net/
 [rclone]: https://rclone.org/
 
-This role helps orchestrate a [restic][] backup system. Configures both clients and destination server. [restic][] and [rclone][] will be downloaded from [Github](https://github.com).
+This role helps orchestrate a [restic][] backup system. Configures both clients and destination server. [restic][] and [rclone][] will be downloaded from [Github](https://github.com). Append only mode is default, and avoids that a client can modify its own historical backups.
 
 ```plain
                +---------+
@@ -28,7 +28,7 @@ A secure bastion server, from where to do Ansible orchestration. The bastion ser
 
 ### OS compatibility
 
-No direct limitation. The Vagrant test environment in `tests` directory runs on these OSes.
+No direct OS limitation. The Vagrant test environment in `tests` directory uses these OSes.
 
 * Ubuntu Jammy
 * Ubuntu Focal
@@ -37,7 +37,7 @@ No direct limitation. The Vagrant test environment in `tests` directory runs on 
 
 ### Known caveats
 
-* CentOS 7 have problems with the sysemd service file. It was excluded from test environment since it's not needed now.
+* CentOS 7 had problems with the sysemd service file. It was excluded from test environment since it's rather old.
 
 ## Role Variables
 
@@ -58,6 +58,7 @@ Configurable variables for this role. `''` is a reference to an empty string.
 * `restic_backup_destination_rclone_transfers` --- rclone parallel streams, default `2`.
 * `restic_backup_source_paths` --- list of paths to backup, default `['/etc']`.
 * `restic_backup_source_password` --- password for backup, default `''`.
+* `restic_backup_source_append_only` --- force append only backup, default `true`.
 * `restic_backup_source_options` --- list of strings with options to add, default `[]`.
 * `restic_backup_source_exclude_if_present` --- exclude directory if file is present, default `.restic-ignore`.
 * `restic_backup_source_timer` --- when to start backup - see `man systemd.time`, default `*-*-* 00:00:00`.
