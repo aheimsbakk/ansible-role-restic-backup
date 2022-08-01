@@ -3,7 +3,7 @@
 [restic]: https://restic.net/
 [rclone]: https://rclone.org/
 
-This role helps orchestrate a [restic][] backup system. Configures both clients and destination server. [restic][] and [rclone][] will be downloaded from [Github](https://github.com). Append only mode is default, and avoids that a client can modify its own historical backups.
+This role helps orchestrate installation of [restic][]. It configures both clients and destination server. [restic][] and [rclone][] will be downloaded from [Github](https://github.com). Append only mode is default, and avoids that a client can modify its own historical backups.
 
 ```plain
                +---------+

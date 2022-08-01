@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Arnulf Heimsbakk
-  description: Ramblings of a sysadmin
+  description: This role helps orchestrate installation of restic. It configures both clients and destination server.
   company: None
 
   role_name: restic_backup
@@ -9,7 +9,7 @@ galaxy_info:
 
   license: GPL-2.0-or-later
 
-  min_ansible_version: '2.11'
+  min_ansible_version: '2.10'
 
   platforms:
     - name: Ubuntu
