@@ -18,7 +18,6 @@ galaxy_info:
         - jammy
     - name: EL
       versions:
-        - '7'
         - '8'
         - '9'
 
