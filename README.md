@@ -19,6 +19,7 @@ This role helps orchestrate a [restic][] backup system. Configures both clients 
 
 ## Versions
 
+* `1.1.1` --- fix linting and publish on [Ansible Galaxy](https://galaxy.ansible.com).
 * `1.1.0` --- make append only backup configurable.
 * `1.0.0` --- initial version.
 * `main` --- upstream development version.
