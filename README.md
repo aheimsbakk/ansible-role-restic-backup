@@ -79,8 +79,38 @@ Configurable variables for this role. `''` is a reference to an empty string.
 
 ```yaml
 - hosts: servers
+  become: true
   roles:
-    - role: restic_backup
+    - role: aheimsbakk.restic_backup
+      restic_backup_destination_server: backup.foo.bar
+      # If FQDN of server don't match IP for receiving backups.
+      restic_backup_destination_address: 10.100.10.13
+      restic_backup_destination_user: backup
+      restic_backup_destination_rclone_transfers: 4
+      restic_backup_destination_path: /opt/backup
+      # Lock each client to it's own restic repository.
+      restic_backup_destination_multiple: true
+      # Add some options for ignoring some directories.
+      restic_backup_source_options:
+        - -e tmp
+        - -e Downloads
+        - -e cache
+      restic_backup_source_password: my-secret-password
+      # Don't allow clients to perform deletion or other
+      # modifications on the restic repository.
+      restic_backup_source_append_only: true
+      # Start backups at midnight.
+      restic_backup_source_timer: '*-*-* 00:00:00'
+      # With a random delay on 6 hours.
+      restic_backup_source_timer_delay: 6h
+      # Let systemd schedule the backup with a tollerance of 1 hour.
+      restic_backup_source_timer_accuracy: 1h
+      # If this file is present, ignore the directory and sub-directories.
+      restic_backup_source_exclude_if_present: .ignore-me
+      restic_backup_source_paths:
+        - /etc
+        - /home
+        - /var/spool/cron
 ```
 
 ## Testing
