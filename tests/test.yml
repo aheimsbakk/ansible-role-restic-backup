@@ -12,6 +12,7 @@
       restic_backup_source_options:
         - -e tmp
       restic_backup_source_password: mypwd
+      restic_backup_source_append_only: true
       restic_backup_source_timer: '*-*-* *:00,10,20,30,40,50:00'
       restic_backup_source_timer_delay: 5m
       restic_backup_source_timer_accuracy: 5m

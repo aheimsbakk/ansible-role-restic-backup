@@ -8,3 +8,7 @@ skip_list:
 
   # skip experimental lints
   - experimental
+
+warn_list:
+  # ignore long lines, that can't be shortend
+  - yaml

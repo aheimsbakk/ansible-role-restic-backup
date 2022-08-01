@@ -11,6 +11,7 @@ restic_backup_destination_rclone_remote: restic
 restic_backup_destination_rclone_transfers: 2
 restic_backup_source_options: []
 restic_backup_source_password: ''
+restic_backup_source_append_only: true
 restic_backup_source_paths:
   - /etc
 restic_backup_source_exclude_if_present: .restic-ignore
