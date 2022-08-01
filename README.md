@@ -19,7 +19,8 @@ This role helps orchestrate a [restic][] backup system. Configures both clients 
 
 ## Versions
 
-* `1.0.0` --- initial version
+* `1.1.0` --- make append only backup configurable.
+* `1.0.0` --- initial version.
 * `main` --- upstream development version.
 
 ## Requirements
