@@ -19,6 +19,7 @@ This role helps orchestrate installation of [restic][]. It configures both clien
 
 ## Versions
 
+* `1.1.2` --- removed timeoutsec from service.
 * `1.1.1` --- fix linting and publish on [Ansible Galaxy](https://galaxy.ansible.com).
 * `1.1.0` --- make append only backup configurable.
 * `1.0.0` --- initial version.
