@@ -9,7 +9,7 @@
       restic_backup_destination_rclone_transfers: 4
       restic_backup_destination_path: /opt/backup
       restic_backup_destination_multiple: true
-      restic_backup_destination_address: 192.168.56.15
+      restic_backup_destination_address: 192.168.56.14
       restic_backup_source_options:
         - -e tmp
         - --compression=max
