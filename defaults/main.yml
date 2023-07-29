@@ -9,6 +9,7 @@ restic_backup_destination_rclone_conf: |
   type = local
 restic_backup_destination_rclone_remote: restic
 restic_backup_destination_rclone_transfers: 2
+restic_backup_destination_compression: max
 restic_backup_source_options: []
 restic_backup_source_password: ''
 restic_backup_source_append_only: true
@@ -18,8 +19,8 @@ restic_backup_source_exclude_if_present: .restic-ignore
 restic_backup_source_timer: '*-*-* 00:00:00'
 restic_backup_source_timer_delay: '6h'
 restic_backup_source_timer_accuracy: '12h'
-restic_backup_restic_version: '0.13.1'
-restic_backup_rclone_version: 'v1.59.0'
+restic_backup_restic_version: '0.15.2'
+restic_backup_rclone_version: 'v1.63.1'
 
 # helper variables
 

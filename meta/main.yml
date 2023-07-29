@@ -12,13 +12,15 @@ galaxy_info:
   min_ansible_version: '2.10'
 
   platforms:
+    - name: Debian
+      versions:
+        - buster
+        - bookworm
     - name: Ubuntu
       versions:
-        - focal
         - jammy
     - name: EL
       versions:
-        - '8'
         - '9'
 
   galaxy_tags:

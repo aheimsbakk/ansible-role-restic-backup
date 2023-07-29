@@ -1,14 +1,15 @@
 ---
-- hosts: all
+- name: Test restic backup with Vagrant
+  hosts: all
   become: true
   roles:
-    - role: ./../..
-      restic_backup_destination_server: alma9
-      restic_backup_destination_user: backup
+    - role: ./../..  # noqa role-name[path]
+      restic_backup_destination_server: jammy
+      restic_backup_destination_user: rbackup
       restic_backup_destination_rclone_transfers: 4
       restic_backup_destination_path: /opt/backup
       restic_backup_destination_multiple: true
-      restic_backup_destination_address: 10.100.10.13
+      restic_backup_destination_address: 192.168.56.13
       restic_backup_source_options:
         - -e tmp
       restic_backup_source_password: mypwd
@@ -21,7 +22,7 @@
         - /etc
         - /var/spool/cron
 
-# On alma9
+# On jammy
 #
-#   sudo -i -u backup
+#   sudo -i -u rbackup
 #   ls /opt/backup/ | xargs -I{} /usr/local/bin/restic -p /var/lib/misc/restic-service-passwd -r '/opt/backup/{}' snapshots

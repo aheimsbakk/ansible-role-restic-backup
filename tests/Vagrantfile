@@ -5,27 +5,28 @@ CURRENT_PATH = File.dirname(File.expand_path(__FILE__))
 
 Vagrant.configure("2") do |config|
   boxes = [
-    { :name => "jammy", :box => "ubuntu/jammy64" },
-    { :name => "focal", :box => "ubuntu/focal64" },
-    { :name => "alma8", :box => "almalinux/8" },
     { :name => "alma9", :box => "almalinux/9" },
+    { :name => "bookworm", :box => "debian/bookworm64" },
+    { :name => "buster", :box => "debian/buster64" },
+    { :name => "jammy", :box => "ubuntu/jammy64" },
   ]
 
   last_octet = 10
   boxes.each do |opts|
     config.vm.define opts[:name] do |config|
       config.vm.box = opts[:box]
-      config.vm.network "private_network", ip: "10.100.10.#{last_octet}"
+      config.vm.network "private_network", ip: "192.168.56.#{last_octet}"
       last_octet += 1
       config.vm.provider "virtualbox" do |vb|
         vb.memory = "1024"
         vb.cpus = 2
-        vb.linked_clone = true
-        # Workaround for Ubuntu Cloud init VMs (focal).
-        # Create virtual serial port, output to file console-output.OS.
-        # Keep workaround in case Ubuntu foules up again.
-        vb.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
-        vb.customize ["modifyvm", :id, "--uartmode1", "file", "#{CURRENT_PATH}/console-output.#{opts[:name]}"]
+        vb.linked_clone = true  # Use if you create a lot of Vagrant VMs
+
+        # # Workaround for Ubuntu Cloud init VMs (focal). Not needed any more in 2023.
+        # # Create virtual serial port, output to file console-output.OS.
+        # # Keep workaround in case Ubuntu foules up again.
+        # vb.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
+        # vb.customize ["modifyvm", :id, "--uartmode1", "file", "#{CURRENT_PATH}/console-output.#{opts[:name]}"]
       end
       if opts[:name] == boxes.last[:name]
         config.vm.provision "ansible: check",  type: "ansible", run: "always" do |ansible|
@@ -36,7 +37,7 @@ Vagrant.configure("2") do |config|
           host_vars = {}
           last_octet = 10
           boxes.each do |opts|
-            host_vars.store("#{opts[:name]}", {"ansible_host" => "10.100.10.#{last_octet}",
+            host_vars.store("#{opts[:name]}", {"ansible_host" => "192.168.56.#{last_octet}",
                                                "ansible_port" => 22})
             last_octet += 1
           end
@@ -49,7 +50,7 @@ Vagrant.configure("2") do |config|
           host_vars = {}
           last_octet = 10
           boxes.each do |opts|
-            host_vars.store("#{opts[:name]}", {"ansible_host" => "10.100.10.#{last_octet}",
+            host_vars.store("#{opts[:name]}", {"ansible_host" => "192.168.56.#{last_octet}",
                                                "ansible_port" => 22})
             last_octet += 1
           end
