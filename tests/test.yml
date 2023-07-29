@@ -5,7 +5,7 @@
   roles:
     - role: ./../..  # noqa role-name[path]
       restic_backup_destination_server: jammy
-      restic_backup_destination_user: backup
+      restic_backup_destination_user: rbackup
       restic_backup_destination_rclone_transfers: 4
       restic_backup_destination_path: /opt/backup
       restic_backup_destination_multiple: true
