@@ -1,20 +1,26 @@
 ---
-- name: install dependencies
+- name: Update debian repositories
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+
+- name: Install dependencies
   ansible.builtin.package:
     name:
       - bzip2
       - unzip
 
-- name: download restic
+- name: Download restic  # noqa yaml[line-length]
   ansible.builtin.get_url:
     url: 'https://github.com/restic/restic/releases/download/v{{ restic_backup_restic_version }}/restic_{{ restic_backup_restic_version }}_linux_{{ restic_architecture_map[ansible_architecture] }}.bz2'
     checksum: 'sha256:https://github.com/restic/restic/releases/download/v{{ restic_backup_restic_version }}/SHA256SUMS'
     dest: /usr/local/src/restic.bz2
-    mode: 0644
+    mode: '0644'
   register: download_restic
   when: not ansible_check_mode
 
-- name: extract restic
+- name: Extract restic  # noqa no-changed-when
   ansible.builtin.shell: |
     set -o pipefail
     cat /usr/local/src/restic.bz2 | bzip2 -d > /usr/local/bin/restic
@@ -24,27 +30,27 @@
     - download_restic is changed
     - not ansible_check_mode
 
-- name: do we have restic binary
+- name: Do we have restic binary
   ansible.builtin.stat:
     path: /usr/local/bin/restic
   register: restic_binary
 
-- name: fix restic mode
+- name: Fix restic mode
   ansible.builtin.file:
     path: /usr/local/bin/restic
-    mode: 0755
+    mode: '0755'
   when: restic_binary.stat.exists|bool
 
-- name: download rclone
+- name: Download rclone  # noqa yaml[line-length]
   ansible.builtin.get_url:
     url: 'https://github.com/rclone/rclone/releases/download/{{ restic_backup_rclone_version }}/rclone-{{ restic_backup_rclone_version }}-linux-{{ restic_architecture_map[ansible_architecture] }}.zip'
     checksum: 'sha256:https://github.com/rclone/rclone/releases/download/{{ restic_backup_rclone_version }}/SHA256SUMS'
     dest: /usr/local/src/rclone.zip
-    mode: 0644
+    mode: '0644'
   register: download_rclone
   when: not ansible_check_mode
 
-- name: extract rclone
+- name: Extract rclone  # noqa no-changed-when
   ansible.builtin.command: |
     unzip -oj /usr/local/src/rclone.zip '*/rclone' -d /usr/local/bin
   when:

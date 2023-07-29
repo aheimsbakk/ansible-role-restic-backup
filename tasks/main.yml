@@ -3,18 +3,18 @@
 
 # Install software
 
-- name: install restic and rclone
+- name: Install restic and rclone
   ansible.builtin.include_tasks: software.yml
 
 ## Modify variables
 
-- name: multiple repositories
+- name: Multiple repositories
   ansible.builtin.set_fact:
     backup_destination_path: '{{ restic_backup_destination_path }}/{{ inventory_hostname }}'
     cacheable: false
   when: restic_backup_destination_multiple|bool
 
-- name: single repository
+- name: Single repository
   ansible.builtin.set_fact:
     backup_destination_path: '{{ restic_backup_destination_path }}'
     cacheable: false
@@ -22,14 +22,14 @@
 
 ## Destination server
 
-- name: destination - create destination user
+- name: Destination - create destination user
   ansible.builtin.user:
     name: '{{ restic_backup_destination_user }}'
     shell: /bin/bash
   run_once: true
   delegate_to: '{{ restic_backup_destination_server }}'
 
-- name: destination - create .ssh folder for restic_user
+- name: Destination - create .ssh folder for restic_user
   ansible.builtin.file:
     path: '/home/{{ restic_backup_destination_user }}/.ssh'
     state: directory
@@ -38,7 +38,7 @@
   run_once: true
   delegate_to: '{{ restic_backup_destination_server }}'
 
-- name: destination - create rclone config folder
+- name: Destination - create rclone config folder
   ansible.builtin.file:
     path: '/home/{{ restic_backup_destination_user }}/{{ item }}'
     state: directory
@@ -50,7 +50,7 @@
     - .config
     - .config/rclone
 
-- name: destination - create rclone configuration
+- name: Destination - create rclone configuration
   ansible.builtin.copy:
     dest: '/home/{{ restic_backup_destination_user }}/.config/rclone/rclone.conf'
     owner: '{{ restic_backup_destination_user }}'
@@ -61,25 +61,25 @@
 
 ## Clients configuration
 
-- name: store restic password to /var/lib/misc
+- name: Store restic password to /var/lib/misc
   ansible.builtin.copy:
     dest: /var/lib/misc/restic-service-passwd
     owner: "{{ restic_backup_destination_user if inventory_hostname == restic_backup_destination_server else 'root' }}"
-    mode: 0400
+    mode: '400'
     content: |
       {{ restic_backup_source_password }}
   no_log: true
 
-- name: create main backup folder with correct owner
+- name: Create main backup folder with correct owner
   ansible.builtin.file:
     path: '{{ restic_backup_destination_path }}'
     state: directory
-    mode: 0700
+    mode: '0700'
     owner: '{{ restic_backup_destination_user }}'
   run_once: true
   delegate_to: '{{ restic_backup_destination_server }}'
 
-- name: init repo if it does not exists
+- name: Init repo if it does not exists
   ansible.builtin.command:
     argv:
       - /usr/local/bin/restic
@@ -93,7 +93,7 @@
   run_once: '{{ not restic_backup_destination_multiple }}'
   register: init_repo
 
-- name: change ownership of repository
+- name: Change ownership of repository
   ansible.builtin.file:
     path: '{{ backup_destination_path }}'
     mode: u+rwX,g-rwx,o-rwx
@@ -103,7 +103,7 @@
   run_once: '{{ not restic_backup_destination_multiple }}'
   when: init_repo is changed
 
-- name: create ssh-key for the root user if it's missing
+- name: Create ssh-key for the root user if it's missing
   ansible.builtin.user:
     name: root
     generate_ssh_key: true
@@ -112,18 +112,18 @@
     ssh_key_comment: 'Ansible managed {{ now(fmt="%y-%m-%d") }}'
     force: false
 
-- name: check if key exists
+- name: Check if key exists
   ansible.builtin.stat:
     path: '/root/.ssh/id_ed25519_{{ restic_backup_destination_user }}'
   register: ssh_pub_key_file
 
-- name: read public key into variable
+- name: Read public key into variable
   ansible.builtin.slurp:
     src: '/root/.ssh/id_ed25519_{{ restic_backup_destination_user }}.pub'
   register: ssh_pub_key_blob
   when: ssh_pub_key_file.stat.exists|bool
 
-- name: write public key to restic_destination
+- name: Write public key to restic_destination
   ansible.posix.authorized_key:
     user: '{{ restic_backup_destination_user }}'
     key: '{{ ssh_pub_key_blob.content | b64decode }}'
@@ -136,7 +136,7 @@
   throttle: 1
   when: ssh_pub_key_blob.content is defined
 
-- name: add restic_destination to known_hosts (ed25519)
+- name: Add restic_destination to known_hosts (ed25519)
   ansible.builtin.known_hosts:
     name: '{{ restic_backup_destination_address | default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }}'
     key: '{{ restic_backup_destination_address | default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }}
@@ -144,7 +144,7 @@
           {{ hostvars[restic_backup_destination_server].ansible_facts.ssh_host_key_ed25519_public }}'
     path: /root/.ssh/known_hosts
 
-- name: add restic_destination to known_hosts (rsa)
+- name: Add restic_destination to known_hosts (rsa)
   ansible.builtin.known_hosts:
     name: '{{ restic_backup_destination_address | default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }}'
     key: '{{ restic_backup_destination_address | default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }}
@@ -152,24 +152,24 @@
           {{ hostvars[restic_backup_destination_server].ansible_facts.ssh_host_key_rsa_public }}'
     path: /root/.ssh/known_hosts
 
-- name: add systemd service for running rclone
+- name: Add systemd service for running rclone
   ansible.builtin.template:
     dest: /etc/systemd/system/restic.service
     src: restic.service
-    mode: 0644
+    mode: '0644'
 
-- name: add systemd timer for running restic
+- name: Add systemd timer for running restic
   ansible.builtin.template:
     dest: /etc/systemd/system/restic.timer
     src: restic.timer
-    mode: 0644
+    mode: '0644'
 
-- name: check if restic.timer exists
+- name: Check if restic.timer exists
   ansible.builtin.stat:
     path: /etc/systemd/system/restic.timer
   register: systemd_restic_timer
 
-- name: enable the systemd timer of restic
+- name: Enable the systemd timer of restic
   ansible.builtin.systemd:
     name: restic.timer
     daemon_reload: true

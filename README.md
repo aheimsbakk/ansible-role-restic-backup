@@ -62,13 +62,13 @@ Configurable variables for this role. `''` is a reference to an empty string.
 * `restic_backup_source_paths` --- list of paths to backup, default `['/etc']`.
 * `restic_backup_source_password` --- password for backup, default `''`.
 * `restic_backup_source_append_only` --- force append only backup, default `true`.
-* `restic_backup_source_options` --- list of strings with options to add, default `[]`.
+* `restic_backup_source_options` --- list of strings with options to add, default `['--compression=max']`.
 * `restic_backup_source_exclude_if_present` --- exclude directory if file is present, default `.restic-ignore`.
 * `restic_backup_source_timer` --- when to start backup - see `man systemd.time`, default `*-*-* 00:00:00`.
 * `restic_backup_source_timer_delay` --- random start delay, default `6h`.
 * `restic_backup_source_timer_accuracy` --- let systemd be flexible, default `12h`.
-* `restic_backup_restic_version` --- version of restic to use, default `0.13.1`.
-* `restic_backup_rclone_version` --- version of rclone to use, default `v1.59.0`.
+* `restic_backup_restic_version` --- version of restic to use, default `0.15.2`.
+* `restic_backup_rclone_version` --- version of rclone to use, default `v1.63.1`.
 
 
 ## Dependencies
