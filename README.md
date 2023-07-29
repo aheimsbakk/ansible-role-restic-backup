@@ -33,9 +33,9 @@ A secure bastion server, from where to do Ansible orchestration. The bastion ser
 
 No direct OS limitation. The Vagrant test environment in `tests` directory uses these OSes.
 
+* Debian Bookworm
+* Debian Buster
 * Ubuntu Jammy
-* Ubuntu Focal
-* Alma Linux 8
 * Alma Linux 9
 
 ### Known caveats
@@ -59,10 +59,11 @@ Configurable variables for this role. `''` is a reference to an empty string.
     ```
 * `restic_backup_destination_rclone_remote` --- remote to use, default `restic`.
 * `restic_backup_destination_rclone_transfers` --- rclone parallel streams, default `2`.
+* `restic_backup_destination_compression` --- restic compression level - `off`,`auto`,`max`, default `max`.
 * `restic_backup_source_paths` --- list of paths to backup, default `['/etc']`.
 * `restic_backup_source_password` --- password for backup, default `''`.
 * `restic_backup_source_append_only` --- force append only backup, default `true`.
-* `restic_backup_source_options` --- list of strings with options to add, default `['--compression=max']`.
+* `restic_backup_source_options` --- list of strings with options to add, default `[]`.
 * `restic_backup_source_exclude_if_present` --- exclude directory if file is present, default `.restic-ignore`.
 * `restic_backup_source_timer` --- when to start backup - see `man systemd.time`, default `*-*-* 00:00:00`.
 * `restic_backup_source_timer_delay` --- random start delay, default `6h`.

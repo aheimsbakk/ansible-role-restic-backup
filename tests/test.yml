@@ -9,10 +9,9 @@
       restic_backup_destination_rclone_transfers: 4
       restic_backup_destination_path: /opt/backup
       restic_backup_destination_multiple: true
-      restic_backup_destination_address: 192.168.56.14
+      restic_backup_destination_address: 192.168.56.13
       restic_backup_source_options:
         - -e tmp
-        - --compression=max
       restic_backup_source_password: mypwd
       restic_backup_source_append_only: true
       restic_backup_source_timer: '*-*-* *:00,10,20,30,40,50:00'
@@ -25,5 +24,5 @@
 
 # On jammy
 #
-#   sudo -i -u backup
+#   sudo -i -u rbackup
 #   ls /opt/backup/ | xargs -I{} /usr/local/bin/restic -p /var/lib/misc/restic-service-passwd -r '/opt/backup/{}' snapshots

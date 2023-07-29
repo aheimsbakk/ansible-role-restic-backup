@@ -9,8 +9,8 @@ restic_backup_destination_rclone_conf: |
   type = local
 restic_backup_destination_rclone_remote: restic
 restic_backup_destination_rclone_transfers: 2
-restic_backup_source_options:
-  - --compression=max
+restic_backup_destination_compression: max
+restic_backup_source_options: []
 restic_backup_source_password: ''
 restic_backup_source_append_only: true
 restic_backup_source_paths:

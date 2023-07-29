@@ -6,7 +6,6 @@ CURRENT_PATH = File.dirname(File.expand_path(__FILE__))
 Vagrant.configure("2") do |config|
   boxes = [
     { :name => "alma9", :box => "almalinux/9" },
-    { :name => "alma8", :box => "almalinux/9" },
     { :name => "bookworm", :box => "debian/bookworm64" },
     { :name => "buster", :box => "debian/buster64" },
     { :name => "jammy", :box => "ubuntu/jammy64" },
@@ -21,7 +20,7 @@ Vagrant.configure("2") do |config|
       config.vm.provider "virtualbox" do |vb|
         vb.memory = "1024"
         vb.cpus = 2
-        # vb.linked_clone = true  # Use if you create a lot of Vagrant vms
+        vb.linked_clone = true  # Use if you create a lot of Vagrant VMs
 
         # # Workaround for Ubuntu Cloud init VMs (focal). Not needed any more in 2023.
         # # Create virtual serial port, output to file console-output.OS.

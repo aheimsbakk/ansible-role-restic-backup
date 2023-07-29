@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=oneshot
-Environment='RESTIC_PASSWORD_FILE=/var/lib/misc/restic-service-passwd' 'HOME=/root'
+Environment='RESTIC_PASSWORD_FILE=/var/lib/misc/restic-service-passwd' 'RESTIC_COMPRESSION={{ restic_backup_destination_compression }}' 'HOME=/root'
 ExecStart=/usr/local/bin/restic -o rclone.program='ssh -i /root/.ssh/id_ed25519_{{ restic_backup_destination_user }} -l {{ restic_backup_destination_user }} {{ restic_backup_destination_address|default(hostvars[restic_backup_destination_server].ansible_facts.fqdn) }}' \
   -r rclone: backup \
   {{ restic_backup_source_options|join(" ") }} \

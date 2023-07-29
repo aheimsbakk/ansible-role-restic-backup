@@ -89,6 +89,7 @@
     creates: '{{ backup_destination_path }}/config'
   environment:
     RESTIC_PASSWORD_FILE: /var/lib/misc/restic-service-passwd
+    RESTIC_COMPRESSION: '{{ restic_backup_destination_compression }}'
   delegate_to: '{{ restic_backup_destination_server }}'
   run_once: '{{ not restic_backup_destination_multiple }}'
   register: init_repo
