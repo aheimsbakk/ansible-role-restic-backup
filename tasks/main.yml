@@ -128,7 +128,7 @@
   ansible.posix.authorized_key:
     user: '{{ restic_backup_destination_user }}'
     key: '{{ ssh_pub_key_blob.content | b64decode }}'
-    comment: '{{ inventory_hostname }}'
+    comment: '{{ inventory_hostname }} {{ ansible_date_time.date }}'
     key_options: 'restrict,command="/usr/local/bin/rclone serve restic --stdio
                   {{ "--append-only" if restic_backup_source_append_only else "" }}
                   --transfers {{ restic_backup_destination_rclone_transfers }}

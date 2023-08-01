@@ -19,6 +19,7 @@ This role helps orchestrate installation of [restic][]. It configures both clien
 
 ## Versions
 
+* `1.2.1` --- added date timestamp to keys in `authorized_keys`.
 * `1.2.0` --- added `restic_backup_destination_compression`, default `max`.
 * `1.1.2` --- removed timeoutsec from service.
 * `1.1.1` --- fix linting and publish on [Ansible Galaxy](https://galaxy.ansible.com).
